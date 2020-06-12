@@ -42,7 +42,7 @@ ggplot(Diro_col, aes(WBC))+geom_histogram()
 Diro_col$`Forest Cover`<-as.factor(Diro_col$`Forest Cover`) #recode forest cover as a facrotr 
 
 Diro_col%<>% replace_with_na(replace = list(Sex = ".", Agey=c(99,0), BCS=c(0, 0.5),))  
-
+hi
 
 ```
 
