@@ -1,0 +1,239 @@
+---
+title: "Vis1_mers"
+author: "Jonathan Wilson"
+date: "17/05/2020"
+output: html_document
+---
+```{r}
+
+mers<-read.csv("cases.csv")
+
+head(mers)
+
+class(mers$onset)
+```
+```{r}
+#look at our data 
+#correct errors
+mers$hospitalized[890] <- c('2015-02-20')
+mers <- mers[-471,]
+
+#use lubroidate to create variable as a date rather than a factor
+library(lubridate)
+mers$onset2 <- ymd(mers$onset)
+mers$hospitalized2 <- ymd(mers$hospitalized)
+class(mers$onset2)
+
+#na omit to remove NA as this will be minimum value for start date otherwise
+day0 <- min(na.omit(mers$onset2))
+#now we have actuyal start date
+
+#change epi day to numeric from date class, with each subsequent date being the next number from zero
+mers$epi.day <- as.numeric(mers$onset2 - day0)
+
+```
+
+```{r}
+library(ggplot2)
+
+m1<-ggplot(data=mers) +
+geom_bar(mapping=aes(x=epi.day,fill=country)) +
+labs(x='Epidemic day', y='Case count', title='Global count of MERS cases by date of symptom onset',
+caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+m1
+```
+
+```{r}
+#if we add argument  position="fill" to geom bar then are bars fill the height of the yaxis
+
+#like this
+
+ggplot(data=mers) +
+geom_bar(mapping=aes(x=epi.day,fill=country), position = "fill") +
+labs(x='Epidemic day', y='Case count', title='Global count of MERS cases by date of symptom onset',
+caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+
+
+```
+
+
+```{r}
+#we add coord_flip and we flip mour x and y axis
+
+m1 + coord_flip()
+
+#if we use coord_poloar then it becomes like pie chart
+m1+ coord_polar()
+
+
+```
+
+```{r}
+mers$infectious.period <- mers$hospitalized2-mers$onset2 # calculate "raw" infectious period
+class(mers$infectious.period) # these data are class "difftime"
+
+mers$infectious.period <- as.numeric(mers$infectious.period, units = "days") # convert to days
+ggplot(data=mers) +
+geom_histogram(aes(x=infectious.period)) +
+labs(x='Infectious period', y='Frequency', title='Distribution of calculated MERS infectious period',
+caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+
+#nosocomial infections in the case of mers gives this misleading infectious period as the person was already in hospital when they became ill
+#use ifelse to only use postive infectious period
+
+mers$infectious.period2 <- ifelse(mers$infectious.period<0,0,mers$infectious.period)
+ggplot(data=mers) +
+geom_histogram(aes(x=infectious.period2)) +
+labs(x='Infectious period', y='Frequency',
+title='Distribution of calculated MERS infectious period (positive values only)',caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+```
+
+
+```{r}
+#create a density plot
+
+ggplot(data=mers) +
+geom_density(mapping=aes(x=infectious.period2)) +
+labs(x='Infectious period', y='Frequency',
+title='Probability density for MERS infectious period (positive values only)', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+
+
+```
+
+
+```{r}
+#area plot
+ggplot(data=mers) +
+geom_area(stat='bin', mapping=aes(x=infectious.period2)) +
+labs(x='Infectious period', y='Frequency',
+title='Area plot for MERS infectious period (positive values only)', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+
+```
+```{r}
+#our univariate continous plot options are geom_area, geom_density, geom_freqpoly, geom_dotplotand geom_histogram, lets make the final 3
+
+#frequency polygon
+
+ggplot(data=mers) +
+geom_freqpoly(stat='bin', mapping=aes(x=infectious.period2)) +
+labs(x='Infectious period', y='Frequency',
+title='Frquency Polygon for MERS infectious period (positive values only)', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+#dot plot
+ggplot(data=mers) +
+geom_dotplot(stat='bin', mapping=aes(x=infectious.period2)) +
+labs(x='Infectious period', y='Frequency',
+title='Dot plot for MERS infectious period (positive values only)', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+#histogram
+ggplot(data=mers) +
+geom_histogram(stat='bin', mapping=aes(x=infectious.period2)) +
+labs(x='Infectious period', y='Frequency',
+title='Histogram for MERS infectious period (positive values only)', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+#there appears to be one outlier at over 150 days
+```
+
+
+```{r}
+#now lets look at infectious period over time
+
+
+
+t1<-ggplot(data=mers) +
+geom_point(mapping=aes(x=epi.day, y=infectious.period2)) +
+labs(y='Infectious period', x='Days since start of epidemic',
+title='Plot for MERS infectious period (positive values only) over course of epidemic', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+t1
+```
+
+```{r}
+#add smooth
+
+
+t1+geom_smooth(aes(x=epi.day, y=infectious.period2))
+ #there is annoyinh outlier which is making it useless, either remove or log, as its only one, lets just cut it out
+
+t1 + 
+scale_y_continuous(limits = c(0, 50)) +
+ geom_smooth(aes(x=epi.day, y=infectious.period2))        
+#maybe signs of societal learning? noit obvious, there is a dip which then rises again
+
+
+
+```
+
+```{r}
+
+#plot for country
+
+ggplot(data=mers) +
+geom_point(mapping=aes(x=epi.day, y=infectious.period2, colour=country)) +
+labs(y='Infectious period', x='Days since start of epidemic',
+title='Plot for MERS infectious period (positive values only) over course of epidemic', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")+ 
+scale_y_continuous(limits = c(0, 50))+
+geom_smooth(aes(x=epi.day, y=infectious.period2, colour=country), method="loess")
+
+
+#its a bit of a mess, with or without the indiviaual points
+
+ggplot(data=mers) +
+labs(y='Infectious period', x='Days since start of epidemic',
+title='Plot for MERS infectious period (positive values only) over course of epidemic', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")+ 
+scale_y_continuous(limits = c(0, 50))+
+geom_smooth(aes(x=epi.day, y=infectious.period2, colour=country), method="loess")
+
+#but there may be more signs of scoietal learning on a coutnyr by country basis
+
+```
+
+```{r}
+#better to split into indiviaul countyr plots
+
+ggplot(data=mers, mapping=aes(x=epi.day, y=infectious.period2)) +
+geom_point(mapping = aes(color=country)) +
+facet_wrap(~ country) +
+scale_y_continuous(limits = c(0, 50)) +
+labs(x='Epidemic day', y='Infectious period',
+title='MERS infectious period (positive values only) over time', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+```
+
+```{r}
+#in this case we want to facet by both gender and coutnry and only include correctly coded geneder observations
+ggplot(data=subset(mers, gender %in% c('M', 'F') & country %in% c('KSA', 'Oman', 'Iran', 'Jordan', 'Qatar', 'South Korea','UAE')), mapping=aes(x=epi.day, y=infectious.period2)) +
+geom_point(mapping = aes(color=country)) +
+facet_grid(gender ~ country) + scale_y_continuous(limits = c(0, 50)) +
+labs(x='Epidemic day', y='Infectious period',
+title='MERS infectious period by gender and country', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+
+
+```
+```{r}
+#look at case fatality rate across epi time per country
+
+#?
+
+```
+
+
+```{r}
+
+#use ggplot extension
+library(ggridges)
+
+
+ggplot(data=mers, aes(x=infectious.period2, y=country, fill=country)) +
+geom_density_ridges() +
+labs(x='Infectious period', y='Country',
+title='Probability density for MERS infectious period (positive values only)', caption="Data from: https://github.com/rambaut/MERS-Cases/blob/gh-pages/data/cases.csv")
+
+
+```

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1591987895699.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "F911F420",
+    "lastKnownWriteTime" : 1589679336,
+    "last_content_update" : 1589679336,
+    "path" : "C:/Users/jjw_t/Desktop/PhD/CDV/CDVGA_Project_JJW/code/analysis_code/CDV19_Exploration.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "304,108",
+        "scrollLine" : "301"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

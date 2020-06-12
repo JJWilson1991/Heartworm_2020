@@ -1,0 +1,49 @@
+---
+title: "Dirofilaria Exploration"
+author: "Jonathan Wilson"
+date: "30/05/2020"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(here)
+library(tidyverse)
+library(GGally)
+library(visdat)
+library(magrittr)
+library(gridExtra)
+library(naniar)
+Diro<-read_csv("Dirofilaria_Dog_Data_5.29.20_update.csv")
+
+Diro_col<-Diro[,-c(1,2,7,8,9,10,35,42)]
+
+
+Diro_col[,c(3,5:28)] <- lapply(Diro_col[,c(3,5:28)], as.numeric)
+```
+```{r}
+vis_miss(Diro_col)#i'm using viss miss to look for issing data
+
+#ggpairs(Diro, columns = c(2,3,4,6,10:34))
+#ggpairs isnt a good way to do this, we only want to know how each relates to DI status
+
+# Diro$Dirofilaria[grep("os", Diro$Dirofilaria)] <- "TRUE" #chaged all positives to true
+# Diro %<>%  mutate(Dirofilaria = recode(Dirofilaria, "Neg" = "FALSE", "0" = "FALSE"))
+colnames(Diro_col)[1]<-"Dirofilaria"
+Diro_col$Dirofilaria<-as.logical(Diro_col$Dirofilaria)
+  
+
+ggplot(Diro_col, aes(GPS_lat))+geom_histogram()
+
+ggplot(Diro_col, aes(WBC))+geom_histogram()
+
+ ggplot(Diro_col, aes(Dirofilaria , Agey))+geom_violin() + scale_y_continuous(limits = c(0, 20))
+
+Diro_col$`Forest Cover`<-as.factor(Diro_col$`Forest Cover`) #recode forest cover as a facrotr 
+
+Diro_col%<>% replace_with_na(replace = list(Sex = ".", Agey=c(99,0), BCS=c(0, 0.5),))  
+
+
+```
+
+

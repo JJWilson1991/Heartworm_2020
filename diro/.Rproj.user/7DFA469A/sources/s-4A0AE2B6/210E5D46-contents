@@ -1,0 +1,344 @@
+---
+title: Programming^[Contributions to lectures and practicals by Andrew W. Park, John
+  M. Drake and Ana I. Bento]
+author: ''
+date: ''
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+## Learning outcomes
+
+1. Writing scripts
+
+2. Writing functions
+
+3. Writing loops
+
+
+## Introduction
+
+This exercise is about writing *scripts*, purpose-built computer programs for performing some analysis. Our scripts will be written using the *RStudio Editor* and compiled using Rstudio. In this exercise we review many basic numerical operations and R functions, programming style, the development of custom functions, pipes, flow of control and loops.
+
+## Data
+
+West Nile virus (WNV) is a positive-sense single-stranded RNA virus transmitted by mosquitoes to a range of vertebrate hosts. WNV was first identified in Uganda in 1937 and found in parts of Europe, Asia, and Australia during the 1950s and 1960s. In 1999, WNV was first reported in the Americas in association with dieoffs of captive and wild birds. This outbreak initiated widespread epidemic that swept across North America and is now spreading in Central and South America. Humans are "dead end" hosts (humans do not achieve sufficiently high viremia to be infectious to mosquitoes). The majority of human cases are asymptomatic, but a small fraction of cases result in meningitis, encephalitis, and/or death. State-level data on the number of reported cases, meningitis/encephalitis, and fatalities are compiled and reported by the CDC and US Geological survey at <https://diseasemaps.usgs.gov/>. The file `wnv.csv` contains tabular data on the number of reported cases (mostly febrile cases), neuroinvasive cases (meningitis/encephalitis), and fatalities for all continental US states from 1999-2007. Additional data are the latitude and longitude of the centroid of each state.
+
+## Scripts
+
+**Exercise. Write a script to load the West Nile virus data and use ggplot to create a histogram for the total number of cases in each state in each year. Follow the format of the *prototypical script*  advocated in the presentation: Header, Load Packages, Declare Functions, Load Data, Perform Analysis.**
+
+#load packages
+#functions
+#load data
+#analysis
+```{r}
+library(ggplot2)
+library(tidyverse)
+```
+```{r}
+
+WNV_Raw<-read.csv("wnv.csv")
+
+#histogram for WNV totalsperyear
+
+ggplot(WNV_Raw, aes(Year, Total, fill=State)) + geom_histogram(stat="identity") 
+
+
+#seperated bybstate
+
+
+ggplot(WNV_Raw, aes(Year, Total, fill=State)) + geom_histogram(stat="identity") +facet_wrap(~State)+ theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 8)) + theme(legend.position = "none")
+
+```
+With each of the following exercises, extend your script so that at the end of the unit you have one script that performs the entire analysis.
+
+**Exercise. The state-level and case burden is evidently highly skewed. Plot a histogram for the logarithm of the number of cases. Do this two different ways.**
+
+
+```{r}
+#do log histograms two wats
+
+#can log trnasform our scale our make a new variable of logged cases
+
+ggplot(WNV_Raw, aes(Year, log(Total), fill=State)) + geom_histogram(stat="identity") 
+
+
+#or
+
+WNV_logcases<- WNV_Raw%>%dplyr::mutate(log_cases=log(Total))
+
+
+ggplot(WNV_logcases, aes(Year, log_cases, fill=State)) + geom_histogram(stat="identity") 
+
+```
+**Exercise. Use arithmetic operators to calculate the raw case fatality rate (CFR) in each state in each year. Plot a histogram of the calcated CFRs.**
+```{r}
+#calculate casue faltality rates
+
+WNV_CFR<- WNV_Raw %>% dplyr::mutate(CFR=Fatal/Total)
+
+
+ggplot(WNV_CFR, aes(Year, CFR, fill=State)) + geom_histogram(stat="identity") +facet_wrap(~State) + theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 8)) + theme(legend.position = "none")
+```
+**Exercise. Use arithmetic operators, logical operators, and the function `sum` to verify that the variable `Total` is simply the sum of the number of febrile cases, neuroinvasive cases, and other cases.**
+
+```{r}
+
+#to check that total is the sum of the other 3 columns 
+WNV_Raw$Total==WNV_Raw$EncephMen + WNV_Raw$Fever + WNV_Raw$Other
+#for each observation we get a true response
+
+#we can also do it for the column totals, which is true in this case
+sum(WNV_Raw$Total)==sum(WNV_Raw$EncephMen) + sum(WNV_Raw$Fever) + sum(WNV_Raw$Other)
+```
+**Exercise. Use modular arithmetic to provide an annual case count for each state rounded (down) to the nearest dozen. Use modular arithmetic to extract the rounding errors associated with this calculate, then add the errors to obtain the total error.**
+
+```{r}
+
+WNV_Raw%<>%mutate(round12=(Total-Total%%12)) #total minus the modulo 12 of total (ie. there mrander when dived by 12)
+
+WNV_Raw%<>%mutate(error=Total%%12) #gives column of remaniders
+
+sum(WNV_Raw$error)
+```
+## Functions
+
+Let us call the ratio of meningitis/encephalitis cases to the total number of cases the *neuroinvasive disease rate*. 
+
+**Exercise. Write a function to calculate the mean and standard error (standard deviation divided by the square root of the sample size) of the neuroinvasive disease rate for all the states in a given list and given set of years. Follow the Google R style and remember to place the function near the top of your script. Use your function to calculate the average severe disease rate in California, Colorado, and New York.**
+
+```{r}
+
+
+
+
+NI_D<-function(data, states, years) {
+  
+  # filter data frame to include data from specific states and years
+  x_new <- data %>% filter(State %in% states, Year %in% years) %>%dplyr::group_by(State)
+  NI<-(x_new$EncephMen/x_new$Total) #Calculate neuro disese rate for filter data
+  
+  n<-length(NI) #number of values for neuro disease in new data
+  sd<-sd(NI) #standard devation of this rate
+  sr<-sqrt(n) #square root of the number of values
+  se<-sd/sr #standard error of the neruo disease rate
+  s<-sum(NI) #sum of neuo disease rate
+  m<-s/n #mean of neuro disease rate
+  
+  NTab <- cbind(State = states , M_NI = m, S_E=se, S_D=sd )
+ 
+return(NTab)  #return neruo invasive disease rate for each filter state and year , the mean and staradrd erro of these rates.
+  }
+
+CA<-NI_D(data = WNV_Raw, states = c("California"), years = c(1999:2007)) #for california mean=0.51243
+
+
+CO<-NI_D(data = WNV_Raw, states = c( "Colorado"), years = c(1999:2007)) #for coloardo mean =0.22358
+
+
+NY<-NI_D(data = WNV_Raw, states = c("New York"), years = c(1999:2007)) #for new york mean = 0.8148642
+
+NCC<-as.data.frame(rbind(CA,CO,NY))  #table of mean rate and standard erro for the 3 states
+
+NCC$M_NI<-as.numeric(as.character(NCC$M_NI)) #convert factors to numeric
+NCC$S_D<-as.numeric(as.character(NCC$S_D))
+NCC$S_E<-as.numeric(as.character(NCC$S_E))
+
+NCC
+```
+**Exercise. Use ggplot to show the neurovinvasive disease rate for these states as a bar graph with error bars to show the standard deviation.**
+
+```{r}
+ggplot(NCC, aes(State, M_NI, fill=State))+geom_bar(stat="identity")+  geom_errorbar(aes(ymin = M_NI - S_D, ymax = M_NI + S_D), width=0.2)
+
+                                                                        
+                                                                   
+```
+
+
+
+**Exercise. Use your function and ggplot to show the neurovinvasive disease rate for all states.**
+```{r}
+
+AS<-unique(WNV_Raw$State)
+All<-as.data.frame(NI_D(data = WNV_Raw, states = AS, years = c(1999:2007))) 
+#not sure how to write this function to apply to each state 
+
+```
+## Pipes
+
+**Exercise. Use pipes to produce the same plots without using your function.**
+
+```{r}
+
+WNV_Raw%>% dplyr::group_by(State)%>%summarise(NeruoR=mean(EncephMen/Total),StDE=stats::sd(mean(EncephMen/Total)))
+
+WNV_Raw%>% mutate(NeuroR=(EncephMen/Total))%>% #calculate neruo rate
+  dplyr::group_by(State)%>%#group by stat
+  summarise(N_S=mean(NeuroR),StDE=stats::sd(NeuroR))%>%#calculate mean and SD
+  ggplot(aes(State, N_S, fill=State))+ #plot the rt with error bars
+  geom_bar(stat="identity")+  
+  geom_errorbar(aes(ymin = N_S - StDE, ymax = N_S + StDE), width=0.2)+
+  labs(x='State', y='Neuorinvasive Disease Rate', title='WNV Neuroinvasive Disease Rate per state 1999-2007') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 8))+
+  theme(legend.position = "none")
+
+
+```
+
+
+
+
+
+
+
+## Control of flow
+
+**Conditional execution.** There is evidence that the WNV case fatality rate differs between the Eastern part of the Unoted States and the Western part, probably due to a difference in the mosquito vector species responsible for transmission in different parts of the country. We can use our variable `Longitude` (the longitude of the state centroid) to study this pattern.
+
+**Exercise. Choose a longitude to designate the "center" of the country. Use the function `ifelse` to assign each state to an "Eastern" region or a "Western" region.**
+```{r}
+
+#as we have no cases in alaska or hawaii, lets use the centee of the loower 48, which is in Kansas at 39°50′N 98°35′W
+WNV_EW<- WNV_Raw%>%group_by(State, Longitude) %>%                            # multiple group columns
+  summarise(State_Total = sum(Total), Death_Total = sum(Fatal))%>%# multiple summary columns
+   dplyr:: mutate(CFR= Death_Total/State_Total) %>% 
+  dplyr:: mutate(EW= Longitude) %>% 
+
+ dplyr::mutate(EW= ifelse(Longitude< -98.35, "Western","Eastern"))
+  
+```
+
+**Exercise. Analyse your data to compare case fatality rates in the Eastern vs. Weestern United States.**
+```{r}
+
+
+ggplot(WNV_EW, aes(EW, CFR)) +geom_boxplot() +geom_jitter()
+```
+
+
+**Exercise. Is there evidence for a *latitudinal gradient* in case fatality rate?**
+```{r}
+
+WNV_lat<- WNV_Raw%>%group_by(State, Latitude) %>%                            # multiple group columns
+  summarise(State_Total = sum(Total), Death_Total = sum(Fatal)) %>%
+   dplyr:: mutate(CFR= Death_Total/State_Total)
+
+ggplot(WNV_lat, aes(Latitude, CFR)) +geom_point() +geom_smooth()
+#there may be a very slight gradient in the untransformed data
+
+```
+**Loops.** One useful task for looping is to select parts of a data set for analysis following an algorith. For instance, analysis can be performed over a series of time points or regions using a script with the following architecture.
+
+```{r eval=FALSE}
+times <- seq(1:10)
+some.algorithm <- function(t){
+  y <- t*10  # a silly example
+}
+output <- c() # Question: What is this line doing?  
+for(t in times){
+  output <- c(output, some.algorithm(t))
+}
+plot(times, output, type='p')
+```
+
+**Exercise. Loop over all the years in the WNV data set (1999-2007) and compute the following statistics: Total number of states reporting cases, total number of reported cases, total number of fatalities, and case fatality rate. Produce some plots to explore how these quantities change over and with respect to each other. Explain what you have learned or suspect based on these plots.**
+```{r}
+#write loop for : no. of staes per year
+#cases per year
+#fatlaities pr year
+#CFR
+
+yrSm <- NULL
+for (y in 1999:2007){
+  tmp <- subset(WNV_Raw,Year==y) #subset data for each year
+  n.States <- dim(tmp)[1] #number of staes reporting in each year
+  tot.Cases <- sum(tmp$Total) #sum cases in each year
+  tot.Deaths<- sum(tmp$Fatal) #sum fatalities
+  CFR<- tot.Deaths/tot.Cases #CFR
+  yrSm <- rbind(yrSm,c(y,n.States,tot.Cases, tot.Deaths, CFR))
+}
+yrSm <- as.data.frame(yrSm)
+names(yrSm) <- c("year","n.States","tot.Cases", "tot.Deaths", "CFR") #yr.sm now includes all the ddata we want per year
+
+ggpairs(yrSm)
+
+ggplot(yrSm)+geom_smooth(aes(x=year, y=tot.Cases))
+ggplot(yrSm)+geom_smooth(aes(x=year, y=CFR))
+ggplot(yrSm)+geom_smooth(aes(x=tot.Cases, y=CFR))+geom_point(aes(x=tot.Cases, y=CFR))
+
+
+#the number of cases and number states involved grows rapidly over the forst 4 years to peak in 2003. This is likely due to increased surveilleance. the case fatlity rate drops over time and with increased number of cases, as initially the only cases being picked up are those with serious symptoms so most liekly to die. as there is more actuve surveillance, cases with lower morbidity will be detected, pushing the CFR down.
+```
+
+**Exercise. How does your choice of longitudinal breakpoint matter to the evidence for a geographic difference in case fatality rate? Combine conditional execution and looping to study the difference in case fatality rate over a range of breakpoints. What is the "best" longitude for separating case fatality rate in the East vs. West?**
+
+```{r}
+#nt entiely sure how to write this loop
+
+East_West <- NULL
+for (i in min(WNV_Raw$Longitude):max(WNV_Raw$Longitude)){
+tmp<- WNV_Raw%>%group_by(State, Longitude) %>%                            # multiple group columns
+  summarise(State_Total = sum(Total), Death_Total = sum(Fatal))%>%# multiple summary columns
+   dplyr:: mutate(CFR= Death_Total/State_Total) %>% 
+  dplyr:: mutate(EW= Longitude) %>% 
+ dplyr::mutate(EW= ifelse(Longitude< i, "Western","Eastern"))
+  East_West[i,]<-ggplot(tmp, aes(EW, CFR)) +geom_boxplot() +geom_jitter()
+}
+```
+## Using help
+
+Using the help functions, i.e., reading the argument list, methods, usage, etc. and being example to apply or extend examples to a new case is an important programming skill (albeit one that doesn't involve any programming!). In this section we practice reading and using R help.
+
+**Exercise. We may interpret raw case fatality rate (i.e. ratio of the number of deaths, $x$, to number of infections, $n$) as a realization from a binomial process with $n$ trials and $x$ "successes" generated by an unknown rate parameter $p$. This $p$ may be the quantity truly of interest (for instance, if we wish to ask if the case fatality rate in California is significantly different from the case fatality rate in Colorado. In R, the *estimated rate* and its *confidence interval* can be obtained using the function `prop.test` for testing equal proportions. Use the help to determine the proper usage of `prop.test` and calculate confidence intervals for the case fatality rates in all states for which there have been reported cases of WNV.**
+```{r}
+
+#lets use the mean CFR as our probability of "success" here as we have no other info, and we shall see if each staes mean CFr differes from this
+p<-mean(WNV_St_CFR$CFR)
+
+
+confint1 <- cbind(min = rep(NA, nrow(WNV_St_CFR)), max = NA)
+for (i in 1:nrow(WNV_St_CFR)){
+  x_new = WNV_St_CFR[i,]
+  tmp <- prop.test(x_new$Death_Total, x_new$State_Total, p = p)
+  confint1[i,] <- tmp$conf.int[1:2]
+}
+
+confint2<-as.data.frame(confint1)
+
+prop_confint <-cbind(ungroup(WNV_St_CFR), confint2)
+
+prop_confint 
+
+#returns daa frame with confidence intervslds 
+
+```
+**Exercise. The "See Also" section of the help for `prop.test` states that a different function might be useful for an exact test of our hypotheses. Use the help to identify what this function is, learn how to use it, and compare the differences.**
+
+```{r}
+#bino.test performs an exact test of a simple null hypothesis about the probability of success in a Bernoulli experiment.
+ 
+bconfint1 <- cbind(min = rep(NA, nrow(WNV_St_CFR)), max = NA)
+for (i in 1:nrow(WNV_St_CFR)){
+  y_new = WNV_St_CFR[i,]
+  tmp <- binom.test(y_new$Death_Total, y_new$State_Total, p = p)
+ bconfint1[i,] <- tmp$conf.inf[1:2]
+}
+
+#i cannot figure out why this wont return the list of conf intervals like the prop test, the structure pf what is returned by bino.test is the same as prop.test?
+
+
+
+bconfint2<-as.data.frame(bconfint1)
+
+binom_confint <-cbind(ungroup(WNV_St_CFR), bconfint2)
+
+binom_confint
+
+```
