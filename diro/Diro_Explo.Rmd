@@ -14,6 +14,8 @@ library(visdat)
 library(magrittr)
 library(gridExtra)
 library(naniar)
+library(ggmosaic)
+library(ggplot2)
 Diro<-read_csv("Dirofilaria_Dog_Data_5.29.20_update.csv")
 
 Diro_col<-Diro[,-c(1,2,7,8,9,10,35,42)]
@@ -42,7 +44,24 @@ ggplot(Diro_col, aes(WBC))+geom_histogram()
 Diro_col$`Forest Cover`<-as.factor(Diro_col$`Forest Cover`) #recode forest cover as a facrotr 
 
 Diro_col%<>% replace_with_na(replace = list(Sex = ".", Agey=c(99,0), BCS=c(0, 0.5),))  
-hi
+#hi
+
+ ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
+
+  ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
+
+Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
+
+Forest_infection
+
+ggsave(here::here("Forest_infection.png"),plot = Forest_infection)
+
+
+
+ggplot(Diro_col,aes(Dirofilaria , WBC))+geom_boxplot()
+
+ggplot(Diro_col,aes(Dirofilaria , HCT))+geom_boxplot() + scale_y_continuous(limits = c(0, 60))
+
 
 ```
 
