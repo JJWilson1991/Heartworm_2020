@@ -24,7 +24,7 @@ Diro_col<-Diro[,-c(1,2,7,8,9,10,35,42)]
 Diro_col[,c(3,5:28)] <- lapply(Diro_col[,c(3,5:28)], as.numeric)
 ```
 ```{r}
-vis_miss(Diro_col)#i'm using viss miss to look for issing data
+vis_miss(Diro_col) #i'm using viss miss to look for issing data
 
 #ggpairs(Diro, columns = c(2,3,4,6,10:34))
 #ggpairs isnt a good way to do this, we only want to know how each relates to DI status
@@ -43,7 +43,7 @@ ggplot(Diro_col, aes(WBC))+geom_histogram()
 
 Diro_col$`Forest Cover`<-as.factor(Diro_col$`Forest Cover`) #recode forest cover as a facrotr 
 
-Diro_col%<>% replace_with_na(replace = list(Sex = ".", Agey=c(99,0), BCS=c(0, 0.5),))  
+Diro_col%<>% replace_with_na(replace = list(Sex = ".", Agey=c(99,0), BCS=c(0, 0.5)))  
 #hi
 
  ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
@@ -55,133 +55,23 @@ Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Fores
 Forest_infection
 
 ggsave(here::here("Forest_infection.png"),plot = Forest_infection)
+```
 
+```{r}
 
 
 ggplot(Diro_col,aes(Dirofilaria , WBC))+geom_boxplot()
 
 ggplot(Diro_col,aes(Dirofilaria , HCT))+geom_boxplot() + scale_y_continuous(limits = c(0, 60))
 class(Diro_col$Sex)
-Diro_col$'Sex' <-as.factor(Diro_col$'Sex')
 
-`
-Dir
->  ggplot(data=Diro_col)+ 
-+     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),fill=Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
 
-R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
-Copyright (C) 2019 The R Foundation for Statistical Computing
-Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Diro_col$Sex<-as.factor(Diro_col$Sex) 
 
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
 
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-[Workspace loaded from ~/Desktop/HW summer/Heartworm_2020/diro/.RData]
-
-> library(ggplot2)
-Warning message:
-package ‘ggplot2’ was built under R version 3.6.2 
-> library(ggmosaic)
-> 
-> ggplot(Diro_col,aes(Dirofilaria , Agey))+geom_violin() +
-+ scale_y_continuous(limits = c(0,20))
-Warning message:
-Removed 24 rows containing non-finite values (stat_ydensity). 
-> ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
-Warning message:
-Removed 29 rows containing non-finite values (stat_ydensity). 
-> ggplot(Diro_col, aes(GPS_lat))+geom_histogram()
-`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-Warning message:
-Removed 11 rows containing non-finite values (stat_bin). 
-> ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 40))
-Warning message:
-Removed 29 rows containing non-finite values (stat_ydensity). 
-> ggplot(Diro_col, aes(Dirofilaria , Sex))+geom_violin()
-> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_boxplot()
-> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_jitter()
-> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_bar()
-Error: stat_count() can only have an x or y aesthetic.
-Run `rlang::last_error()` to see where the error occurred.
-> > ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_jitter()
-Error: unexpected '>' in ">"
-> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_jitter()
-> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
-> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
-> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
-> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
-> Diro_col$`sex`<-as.factor(Diro_col$`Sex`) 
-> 
-> Diro_col$`Sex`<-as.factor(Diro_col$`Sex`)
-> Diro_col$`Sex`<-as.factor(Diro_col$`Sex`)
-> Diro_col$'Sex' <-as.factor(Diro_col$'Sex')
-> class(Diro_col$Sex)
-[1] "factor"
-> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
-> 
-> 
-> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
-> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, 'Sex'), fill=Sex))+ xlab(Sex)+ylab("Dirofilaria Infection")
-> ggplot(data=Diro) + 
-+ geom_mosaic(aes(x= product(Sex), filled.contour(Sex))
-+ 
-+ s
-Error: unexpected symbol in:
-"
-s"
-> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
-> data(Dirofilaria)
-Warning message:
-In data(Dirofilaria) : data set ‘Dirofilaria’ not found
-> data(diro)
-Warning message:
-In data(diro) : data set ‘diro’ not found
-> data(Diro)
-Warning message:
-In data(Diro) : data set ‘Diro’ not found
-> ggplot(data=Diro)+
-+ geom_mosaic(aes(x=Diro_col, Sex))
-Error: stat_mosaic() must not be used with a y aesthetic.
-> ggplot(data=Diro_col)+ 
-+ geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex")+ylab(Dirofilaria Infection)
-Error: unexpected symbol in:
-"ggplot(data=Diro_col)+ 
-geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex")+ylab(Dirofilaria Infection"
-> "ggplot(data=Diro_col)+ 
-+ geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex")+ylab(Dirofilaria Infection)
-Error: unexpected symbol in:
-""ggplot(data=Diro_col)+ 
-geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex"
->  ggplot(data=Diro_col)+ 
-+     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
-Error: unexpected symbol in:
-" ggplot(data=Diro_col)+ 
-    + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
-> ggplot(data=Diro_col)+ 
-+     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
-Error: unexpected symbol in:
-"ggplot(data=Diro_col)+ 
-    + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
->  ggplot(data=Diro_col)+ 
-+     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),fill=Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
-Error: unexpected symbol in:
-" ggplot(data=Diro_col)+ 
-    + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),fill=Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
-> > ggplot(data=Diro_col)+ 
-Error: unexpected '>' in ">"
->     +     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
-Error: unexpected symbol in "    +     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
-> 
-> 
-> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
+Sex<-ggplot(Diro_col) + geom_mosaic(aes(x=product(Dirofilaria, Sex), fill=Dirofilaria), na.rm = TRUE) + xlab("Sex") + ylab("Dirofilaria Infection")
+ 
+Sex
+ 
+#need to alter the axes so theyre labeled
+```
