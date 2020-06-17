@@ -66,3 +66,122 @@ Diro_col$'Sex' <-as.factor(Diro_col$'Sex')
 
 `
 Dir
+>  ggplot(data=Diro_col)+ 
++     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),fill=Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
+
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Workspace loaded from ~/Desktop/HW summer/Heartworm_2020/diro/.RData]
+
+> library(ggplot2)
+Warning message:
+package ‘ggplot2’ was built under R version 3.6.2 
+> library(ggmosaic)
+> 
+> ggplot(Diro_col,aes(Dirofilaria , Agey))+geom_violin() +
++ scale_y_continuous(limits = c(0,20))
+Warning message:
+Removed 24 rows containing non-finite values (stat_ydensity). 
+> ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
+Warning message:
+Removed 29 rows containing non-finite values (stat_ydensity). 
+> ggplot(Diro_col, aes(GPS_lat))+geom_histogram()
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+Warning message:
+Removed 11 rows containing non-finite values (stat_bin). 
+> ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 40))
+Warning message:
+Removed 29 rows containing non-finite values (stat_ydensity). 
+> ggplot(Diro_col, aes(Dirofilaria , Sex))+geom_violin()
+> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_boxplot()
+> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_jitter()
+> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_bar()
+Error: stat_count() can only have an x or y aesthetic.
+Run `rlang::last_error()` to see where the error occurred.
+> > ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_jitter()
+Error: unexpected '>' in ">"
+> ggplot(Diro_col, aes(Dirofilaria , Sex)) + geom_jitter()
+> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
+> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
+> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
+> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
+> Diro_col$`sex`<-as.factor(Diro_col$`Sex`) 
+> 
+> Diro_col$`Sex`<-as.factor(Diro_col$`Sex`)
+> Diro_col$`Sex`<-as.factor(Diro_col$`Sex`)
+> Diro_col$'Sex' <-as.factor(Diro_col$'Sex')
+> class(Diro_col$Sex)
+[1] "factor"
+> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
+> 
+> 
+> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
+> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, 'Sex'), fill=Sex))+ xlab(Sex)+ylab("Dirofilaria Infection")
+> ggplot(data=Diro) + 
++ geom_mosaic(aes(x= product(Sex), filled.contour(Sex))
++ 
++ s
+Error: unexpected symbol in:
+"
+s"
+> Sex<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Sex`), fill=`Sex`))+xlab("Sex")+ylab("Dirofilaria Infection")
+> data(Dirofilaria)
+Warning message:
+In data(Dirofilaria) : data set ‘Dirofilaria’ not found
+> data(diro)
+Warning message:
+In data(diro) : data set ‘diro’ not found
+> data(Diro)
+Warning message:
+In data(Diro) : data set ‘Diro’ not found
+> ggplot(data=Diro)+
++ geom_mosaic(aes(x=Diro_col, Sex))
+Error: stat_mosaic() must not be used with a y aesthetic.
+> ggplot(data=Diro_col)+ 
++ geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex")+ylab(Dirofilaria Infection)
+Error: unexpected symbol in:
+"ggplot(data=Diro_col)+ 
+geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex")+ylab(Dirofilaria Infection"
+> "ggplot(data=Diro_col)+ 
++ geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex")+ylab(Dirofilaria Infection)
+Error: unexpected symbol in:
+""ggplot(data=Diro_col)+ 
+geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex)+xlab("Sex"
+>  ggplot(data=Diro_col)+ 
++     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
+Error: unexpected symbol in:
+" ggplot(data=Diro_col)+ 
+    + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
+> ggplot(data=Diro_col)+ 
++     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
+Error: unexpected symbol in:
+"ggplot(data=Diro_col)+ 
+    + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
+>  ggplot(data=Diro_col)+ 
++     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),fill=Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
+Error: unexpected symbol in:
+" ggplot(data=Diro_col)+ 
+    + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),fill=Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
+> > ggplot(data=Diro_col)+ 
+Error: unexpected '>' in ">"
+>     +     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection)
+Error: unexpected symbol in "    +     + geom_mosaic(aes(x=product(Dirofilaria, 'Sex'),filled.contour(Sex))+xlab("Sex")+ylab(Dirofilaria Infection"
+> 
+> 
+> Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, `Forest Cover`), fill=`Forest Cover`))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
