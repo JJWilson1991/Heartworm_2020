@@ -61,8 +61,8 @@ ggsave(here::here("Forest_infection.png"),plot = Forest_infection)
 ggplot(Diro_col,aes(Dirofilaria , WBC))+geom_boxplot()
 
 ggplot(Diro_col,aes(Dirofilaria , HCT))+geom_boxplot() + scale_y_continuous(limits = c(0, 60))
+class(Diro_col$Sex)
+Diro_col$'Sex' <-as.factor(Diro_col$'Sex')
 
-
-```
-
-
+`
+Dir
