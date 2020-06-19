@@ -18,7 +18,8 @@ library(ggmosaic)
 library(ggplot2)
 Diro<-read_csv("Dirofilaria_Dog_Data_5.29.20_update.csv")
 
-Diro_col<-Diro[,-c(1,2,7,8,9,10,35,42)]
+Diro_col<-Diro[,-c(1,2,7,8,9,35,42)]
+
 
 
 Diro_col[,c(3,5:28)] <- lapply(Diro_col[,c(3,5:28)], as.numeric)
