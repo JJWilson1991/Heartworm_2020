@@ -1,0 +1,85 @@
+---
+title: "Dirofilaria Exploration"
+author: "Jonathan Wilson"
+date: "30/05/2020"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(here)
+library(tidyverse)
+library(GGally)
+library(visdat)
+library(magrittr)
+library(gridExtra)
+library(naniar)
+library(ggmosaic)
+library(ggplot2)
+
+Diro_col<-readRDS(here::here("data", "processed_data","Diro_clean.rds"))
+  
+ ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
+
+  ggplot(Diro_col, aes(Dirofilaria , WBC))+geom_violin()# + scale_y_continuous(limits = c(0, 20))
+
+Forest_infection<-ggplot(Diro_col)+geom_mosaic(aes(x=product(Dirofilaria, Forest_Cover), fill=Forest_Cover))+xlab("Forest Cover")+ylab("Dirofilaria Infection")
+
+Forest_infection
+
+ggsave(here::here("results","figures","Forest_infection.png"),plot = Forest_infection)
+```
+
+```{r}
+
+
+WBC<-ggplot(Diro_col,aes(Dirofilaria , WBC))+geom_boxplot()
+
+HCT<-ggplot(Diro_col,aes(Dirofilaria , HCT))+geom_boxplot() + scale_y_continuous(limits = c(0, 60))
+class(Diro_col$Sex)
+
+ggsave(here::here("results","figures","HCT_Box.png"),plot =HCT)
+
+ggsave(here::here("results","figures","WBC_box.png"),plot = WBC)
+
+Diro_col$Sex<-as.factor(Diro_col$Sex) 
+
+
+Sex<-ggplot(Diro_col) + geom_mosaic(aes(x=product(Dirofilaria, Sex), fill=Dirofilaria), na.rm = TRUE) + xlab("Sex") + ylab("Dirofilaria Infection")
+ 
+Sex
+
+ggsave(here::here("results","figures","Sex_moasaic.png"),plot = Sex)
+ 
+#need to alter the axes so theyre labeled
+```
+
+```{r}
+Agey<-ggplot(Diro_col,aes(Dirofilaria , Agey))+geom_boxplot()
+Band<-ggplot(Diro_col,aes(Dirofilaria , BAND))+geom_boxplot()
+BCS<-ggplot(Diro_col,aes(Dirofilaria , BCS))+geom_boxplot()
+EOSIN<-ggplot(Diro_col,aes(Dirofilaria , EOSIN))+geom_boxplot()
+HGB<-ggplot(Diro_col,aes(Dirofilaria , HGB))+geom_boxplot()
+LYM<-ggplot(Diro_col,aes(Dirofilaria , LYMP))+geom_boxplot()
+MONO<-ggplot(Diro_col,aes(Dirofilaria , MONO))+geom_boxplot()
+RBC<-ggplot(Diro_col,aes(Dirofilaria , RBC))+geom_boxplot()
+SEG<-ggplot(Diro_col,aes(Dirofilaria , SEG))+geom_boxplot()
+Temp_F<-ggplot(Diro_col,aes(Dirofilaria , temp_F))+geom_boxplot()
+
+
+ggsave(here::here("results","figures","Agey_Box.png"),plot = Agey)
+ggsave(here::here("results","figures","Band_Box.png"),plot = Band)
+ggsave(here::here("results","figures","BCS_Box.png"),plot = BCS)
+ggsave(here::here("results","figures","EOSIN_Box.png"),plot = EOSIN)
+ggsave(here::here("results","figures","HGB_Box.png"),plot = HGB)
+ggsave(here::here("results","figures","LYM_Box.png"),plot = LYM)
+ggsave(here::here("results","figures","MONO_Box.png"),plot = MONO)
+ggsave(here::here("results","figures","RBC_Box.png"),plot = RBC)
+ggsave(here::here("results","figures","SEG_Box.png"),plot = SEG)
+ggsave(here::here("results","figures","Temp_Box.png"),plot = Temp_F)
+
+
+
+
+
+```
