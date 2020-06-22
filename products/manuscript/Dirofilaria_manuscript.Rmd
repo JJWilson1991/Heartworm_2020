@@ -1,0 +1,20 @@
+---
+title: "Dirofilaria_manuscript"
+author: "Natalya"
+date: "21/06/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+#just creating a doc for the products folder
+```
+
+```{r, resulttable1,  echo=FALSE}
+Forest_table=readRDS(here("results", "tables", "Forest_table1.rds"))
+knitr::kable(Forest_table, caption = '**Dirofialrai**')
+```
+
+```{r}
+```
+

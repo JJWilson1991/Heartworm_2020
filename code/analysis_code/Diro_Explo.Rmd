@@ -16,6 +16,9 @@ library(gridExtra)
 library(naniar)
 library(ggmosaic)
 library(ggplot2)
+library(reactable)
+```
+```{r}
 
 Diro_col<-readRDS(here::here("data", "processed_data","Diro_clean.rds"))
   
@@ -30,17 +33,15 @@ Forest_infection
 ggsave(here::here("results","figures","Forest_infection.png"),plot = Forest_infection)
 ```
 
-```{r}
-
+```{r} 
+#FYI some temps are in c and some Fwant to IDELSE to convert?
 
 WBC<-ggplot(Diro_col,aes(Dirofilaria , WBC))+geom_boxplot()
 
 HCT<-ggplot(Diro_col,aes(Dirofilaria , HCT))+geom_boxplot() + scale_y_continuous(limits = c(0, 60))
 class(Diro_col$Sex)
 
-ggsave(here::here("results","figures","HCT_Box.png"),plot =HCT)
 
-ggsave(here::here("results","figures","WBC_box.png"),plot = WBC)
 
 Diro_col$Sex<-as.factor(Diro_col$Sex) 
 
@@ -55,18 +56,38 @@ ggsave(here::here("results","figures","Sex_moasaic.png"),plot = Sex)
 ```
 
 ```{r}
+#yopu need to annotate this and paly arround with it
+
+
 Agey<-ggplot(Diro_col,aes(Dirofilaria , Agey))+geom_boxplot()
-Band<-ggplot(Diro_col,aes(Dirofilaria , BAND))+geom_boxplot()
 BCS<-ggplot(Diro_col,aes(Dirofilaria , BCS))+geom_boxplot()
-EOSIN<-ggplot(Diro_col,aes(Dirofilaria , EOSIN))+geom_boxplot()
-HGB<-ggplot(Diro_col,aes(Dirofilaria , HGB))+geom_boxplot()
-LYM<-ggplot(Diro_col,aes(Dirofilaria , LYMP))+geom_boxplot()
-MONO<-ggplot(Diro_col,aes(Dirofilaria , MONO))+geom_boxplot()
-RBC<-ggplot(Diro_col,aes(Dirofilaria , RBC))+geom_boxplot()
-SEG<-ggplot(Diro_col,aes(Dirofilaria , SEG))+geom_boxplot()
 Temp_F<-ggplot(Diro_col,aes(Dirofilaria , temp_F))+geom_boxplot()
 
+RBC<-ggplot(Diro_col,aes(Dirofilaria , RBC))+geom_boxplot()
+HGB<-ggplot(Diro_col,aes(Dirofilaria , HGB))+geom_boxplot()
+MCV<-ggplot(Diro_col,aes(Dirofilaria , MCV))+geom_boxplot()
+MCHC<-ggplot(Diro_col,aes(Dirofilaria , MCHC))+geom_boxplot()
+MCH<-ggplot(Diro_col,aes(Dirofilaria , MCH))+geom_boxplot()
+RDW<-ggplot(Diro_col,aes(Dirofilaria , RDW))+geom_boxplot()
+PLT<-ggplot(Diro_col,aes(Dirofilaria , PLT))+geom_boxplot()
+MPV<-ggplot(Diro_col,aes(Dirofilaria , MPV))+geom_boxplot()
 
+
+LYMP<-ggplot(Diro_col,aes(Dirofilaria , LYMP))+geom_boxplot()
+MONO<-ggplot(Diro_col,aes(Dirofilaria , MONO))+geom_boxplot()
+SEG<-ggplot(Diro_col,aes(Dirofilaria , SEG))+geom_boxplot()
+Band<-ggplot(Diro_col,aes(Dirofilaria , BAND))+geom_boxplot()
+EOSIN<-ggplot(Diro_col,aes(Dirofilaria , EOSIN))+geom_boxplot()
+BASO<-ggplot(Diro_col,aes(Dirofilaria , BASO))+geom_boxplot()
+LYMPER<-ggplot(Diro_col,aes(Dirofilaria , LYMPER))+geom_boxplot()
+MID<-ggplot(Diro_col,aes(Dirofilaria, MID)) +geom_boxplot()
+MIDP<-ggplot(Diro_col,aes(Dirofilaria , MIDP))+geom_boxplot()
+GRAN<-ggplot(Diro_col,aes(Dirofilaria , GRAN))+geom_boxplot()
+GRANP<-ggplot(Diro_col,aes(Dirofilaria , GRANP))+geom_boxplot()
+LYM<-ggplot(Diro_col,aes(Dirofilaria , LYM))+geom_boxplot()
+
+ggsave(here::here("results","figures","HCT_Box.png"),plot =HCT)
+ggsave(here::here("results","figures","WBC_box.png"),plot = WBC)
 ggsave(here::here("results","figures","Agey_Box.png"),plot = Agey)
 ggsave(here::here("results","figures","Band_Box.png"),plot = Band)
 ggsave(here::here("results","figures","BCS_Box.png"),plot = BCS)
@@ -77,8 +98,38 @@ ggsave(here::here("results","figures","MONO_Box.png"),plot = MONO)
 ggsave(here::here("results","figures","RBC_Box.png"),plot = RBC)
 ggsave(here::here("results","figures","SEG_Box.png"),plot = SEG)
 ggsave(here::here("results","figures","Temp_Box.png"),plot = Temp_F)
+ggsave(here::here("results","figures","LYMPER_Box.png"),plot = LYMPER)
+ggsave(here::here("results","figures","MID_Box.png"),plot = MID)
+ggsave(here::here("results","figures","MIDP_Box.png"),plot = MIDP)
+ggsave(here::here("results","figures","GRAN_Box.png"),plot = GRAN)
+ggsave(here::here("results","figures","GRANP_Box.png"),plot = GRANP)
+ggsave(here::here("results","figures","MCV_Box.png"),plot =MCV)
+ggsave(here::here("results","figures","MCH_box.png"),plot = MCH)
+ggsave(here::here("results","figures","MCHC_Box.png"),plot =MCHC)
+ggsave(here::here("results","figures","RDW_Box.png"),plot =RDW)
+ggsave(here::here("results","figures","PLT_Box.png"),plot =PLT)
+ggsave(here::here("results","figures","MPV_Box.png"),plot =MPV)
+ggsave(here::here("results","figures","LYMP_Box.png"),plot =LYMP)
+ggsave(here::here("results","figures","BASO_Box.png"),plot =BASO)
+ggsave(here::here("results","figures","HCT_Box.png"),plot =HCT)
 
 
+
+grid.arrange(Agey, BCS, Temp_F, nrow=1)
+grid.arrange(RBC, HGB, HCT, MCV, MCH,MCHC,RDW,PLT, MPV, ncol=3)
+grid.arrange(WBC, LYM, LYMPER, MID, MIDP, GRAN, GRANP, SEG, Band, LYMP,MONO, EOSIN, BASO, ncol=3)
+```
+
+
+
+```{r}
+#so there are a thousand ways to present your tables, but this is a new package i foun d so i'm goinna try it
+Forest_table <-table(Diro_col$Dirofilaria, Diro_col$Forest_Cover)
+
+#this creates a very straightworward frequency table, which ive saved as an RDS, how you disply this in markdown has a huge array of options, Kable is  a pretty straghtforward one
+
+
+Forest_table %>% saveRDS(here::here("results", "tables","Forest_table1.rds"))
 
 
 
