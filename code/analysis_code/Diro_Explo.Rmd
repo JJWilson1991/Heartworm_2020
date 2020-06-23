@@ -16,7 +16,7 @@ library(gridExtra)
 library(naniar)
 library(ggmosaic)
 library(ggplot2)
-library(reactable)
+
 ```
 ```{r}
 
@@ -34,7 +34,7 @@ ggsave(here::here("results","figures","Forest_infection.png"),plot = Forest_infe
 ```
 
 ```{r} 
-#FYI some temps are in c and some Fwant to IDELSE to convert?
+#FYI some temps are in c and some Fwant to IDELSE to convert? --> done
 
 WBC<-ggplot(Diro_col,aes(Dirofilaria , WBC))+geom_boxplot()
 
