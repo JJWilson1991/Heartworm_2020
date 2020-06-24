@@ -127,7 +127,7 @@ grid.arrange(WBC, LYM, LYMPER, MID, MIDP, GRAN, GRANP, SEG, Band, LYMP,MONO, EOS
 Forest_table <-table(Diro_col$Dirofilaria, Diro_col$Forest_Cover)
 
 #this creates a very straightworward frequency table, which ive saved as an RDS, how you disply this in markdown has a huge array of options, Kable is  a pretty straghtforward one
-
+print.table(Forest_table)
 
 Forest_table %>% saveRDS(here::here("results", "tables","Forest_table1.rds"))
 
