@@ -1,0 +1,114 @@
+---
+title: "Untitled"
+author: "JJW"
+date: "21/07/2020"
+output: html_document
+---
+
+```{r}
+library(spatstat)
+
+```
+```{r}
+
+Diro_col<-readRDS(here::here("data", "processed_data","Diro_clean.rds"))
+
+
+Diro_col
+
+```
+```{r}
+ggplot(Diro_col)+geom_point(data=Diro_col, aes(x=longitude, y=latitude))#+geom_text(aes(x=longitude, y=latitude,label=communidad),hjust=0, vjust=0)
+
+
+```
+```{r}
+
+communities_nested<-Diro_col%>%group_by(communidad)%>%nest()
+
+S_C_lat<-range(communities_nested$data[[6]]$latitude)#create object with max and min latitude
+S_C_long<-range(communities_nested$data[[6]]$longitude)
+
+
+```
+```{r}
+#create window for ripleys K ananlyis, using the lat and long ramnge 
+riprange_S_C<-owin(xrange=S_C_long, yrange=S_C_lat, poly=NULL, mask=NULL,
+unitname=NULL, xy=NULL)
+ripPointmap_S_C<-ppp(x=communities_nested$data[[6]]$longitude,y=communities_nested$data[[6]]$latitude, window= riprange_S_C)
+plot(ripPointmap_S_C)
+
+#plot the ripleysk 
+
+plot(Kest(ripPointmap_S_C)) 
+
+#There is significant clustering of points as the K hat is above the K poi
+
+#Add envelope as the error margins
+
+Ripleys_K_S_C<- envelope(ripPointmap_S_C)
+
+Ripleys_Cases_S_C <- plot(Ripleys_K_S_C,main=list("Ripley's K-function for Superacion Campesino", cex=0.8))
+
+png(here::here("results", "Figures_new", "RipK19.png"))
+plot(Ripleys_K,main=list("Ripley's K-function for CDV cases in raccoons and gray foxes in Georgia, which presented to SCWDS, 1975-2019", cex=0.8))
+dev.off()
+
+
+ 
+```
+
+#split into true and false
+```{r}
+
+communities_nested_true<-Diro_col%>%filter(Dirofilaria==TRUE)%>%group_by(communidad)%>%nest()
+
+communities_nested_false<-Diro_col%>%filter(Dirofilaria==FALSE)%>%group_by(communidad)%>%nest()
+
+
+
+```
+```{r}
+#create window for ripleys K ananlyis, using the lat and long ramnge 
+
+ripPointmap_S_C_T<-ppp(x=communities_nested_true$data[[5]]$longitude,y=communities_nested_true$data[[5]]$latitude, window= riprange_S_C)
+plot(ripPointmap_S_C_T)
+
+#plot the ripleysk 
+
+plot(Kest(ripPointmap_S_C_T)) 
+
+#There is significant clustering of points as the K hat is above the K poi
+
+#Add envelope as the error margins
+
+Ripleys_K_S_C_T<- envelope(ripPointmap_S_C_T)
+
+Ripleys_Cases_S_C_T <- plot(Ripleys_K_S_C_T,main=list("Ripley's K-function for Superacion Campesino, Trues", cex=0.8))
+
+png(here::here("results", "Figures_new", "RipK19.png"))
+plot(Ripleys_K,main=list("Ripley's K-function for CDV cases in raccoons and gray foxes in Georgia, which presented to SCWDS, 1975-2019", cex=0.8))
+dev.off()
+
+
+ 
+```
+
+```{r}
+
+ripPointmap_S_C_F<-ppp(x=communities_nested_false$data[[6]]$longitude,y=communities_nested_false$data[[6]]$latitude, window= riprange_S_C)
+plot(ripPointmap_S_C_F)
+
+#plot the ripleysk 
+
+plot(Kest(ripPointmap_S_C_F)) 
+
+#There is significant clustering of points as the K hat is above the K poi
+
+#Add envelope as the error margins
+
+Ripleys_K_S_C_F<- envelope(ripPointmap_S_C_F)
+
+Ripleys_Cases_S_C_F <- plot(Ripleys_K_S_C_F,main=list("Ripley's K-function for Superacion Campesino, False", cex=0.8))
+
+```
