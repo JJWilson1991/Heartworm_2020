@@ -132,7 +132,7 @@ print.table(Forest_table)
 
 Forest_table %>% saveRDS(here::here("results", "tables","Forest_table1.rds"))
 
-
+chisq.test(Forest_table)
 
 ```
 =======
@@ -268,11 +268,43 @@ Forest_table <-table(Diro_col$Dirofilaria, Diro_col$Forest_Cover)
 print.table(Forest_table)
 
 
+
 Forest_table %>% saveRDS(here::here("results", "tables","Forest_table1.rds"))
-
-
 ```
 ```{r}
+Diro_col$communidad%<>%as.factor()
+East_Forest<-Diro_col%>%filter(communidad%in%c("Altos de Pacora", "Superacion Campesino", "Tierra Promitida"))
+West_Forest<-Diro_col%>%filter(communidad%nin%c("Altos de Pacora", "Superacion Campesino", "Tierra Promitida"))
+East_Forest$communidad%<>%as.character()
+West_Forest$communidad%<>%as.character()
+East_Forest_table<-table(East_Forest$Dirofilaria, East_Forest$Forest_Cover)
+West_Forest_table <-table(West_Forest$Dirofilaria, West_Forest$Forest_Cover)
+#Made tables for east and west seperately and ran chi squared test 
+```
+```{r}
+Diro_col%<>%mutate(east_west=ifelse(communidad%in%c("Altos de Pacora", "Superacion Campesino", "Tierra Promitida"), "west","east"))
+#Make new for sheet column with east and west. need to fix NA=east
+Deforested_EW<-Diro_col%>%filter(Forest_Cover%in%"Deforested Matrix")
+fisher.test(table(Deforested_EW$Dirofilaria,Deforested_EW$east_west))
+chisq.test(table(Deforested_EW$Dirofilaria,Deforested_EW$east_west))
+#table for east and west deforested
+Forest_EW<-Diro_col%>%filter(Forest_Cover%in%"Forested Matrix")
+fisher.test(table(Forest_EW$Dirofilaria,Forest_EW$east_west))
+chisq.test(table(Forest_EW$Dirofilaria,Forest_EW$east_west))
+#table for East and West forested
+Fragmented_EW<-Diro_col%>%filter(Forest_Cover%in%"Fragmented Matrix")
+fisher.test(table(Fragmented_EW$Dirofilaria,Fragmented_EW$east_west))
+chisq.test(table(Fragmented_EW$Dirofilaria,Fragmented_EW$east_west))
+#table for East and West fragmented
+```
+
+#```{r}
+#summary((glm(Dirofilaria~Forest_Cover, family = poisson, data=Diro_col)))
+#```
+
+```{r}
+mean(Diro_col$BCS,na.rm = T)
+```
 library(sf)
 dsa<-st_as_sf(maps::map("world", regions = "panama"))
 
@@ -281,3 +313,4 @@ Diro_col%<>% replace_with_na(replace = list(Sex = ".", Agey=c(99,0), BCS=c(0, 0.
 ggplot(dsa)+geom_sf(aes(geometry=geom))+geom_point(data=Diro_col, aes(x=longitude, y=latitude)) +scale_y_continuous(limits = c(8.5, 9.5)) +scale_x_continuous(limits = c(79, 80.5))
 ```
 >>>>>>> Stashed changes
+
