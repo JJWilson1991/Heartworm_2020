@@ -279,6 +279,9 @@ East_Forest$communidad%<>%as.character()
 West_Forest$communidad%<>%as.character()
 East_Forest_table<-table(East_Forest$Dirofilaria, East_Forest$Forest_Cover)
 West_Forest_table <-table(West_Forest$Dirofilaria, West_Forest$Forest_Cover)
+Forest_table <-table(Diro_col$Dirofilaria, Diro_col$Forest_Cover)
+chisq.test(East_Forest_table)
+chisq.test(West_Forest_table)
 #Made tables for east and west seperately and ran chi squared test 
 ```
 ```{r}
