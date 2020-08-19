@@ -323,11 +323,11 @@ Diro_col%<>%mutate(anemia=ifelse(RBC<5.5|HGB<12|HCT<37, 1, 0))
 ```
 ```{r}
 Diro_col%<>%mutate(Leukopenia=ifelse(WBC<5.5,1, 0))
-Diro_col%<>%mutate(Leukophilia=ifelse(WBC>19.5,1, 0))
+Diro_col%<>%mutate(Leukocytosis=ifelse(WBC>19.5,1, 0))
 table(Diro_col$Leukopenia, Diro_col$Dirofilaria)
-table(Diro_col$Leukophilia, Diro_col$Dirofilaria)
+table(Diro_col$Leukocytosis, Diro_col$Dirofilaria)
 chisq.test(table(Diro_col$Leukopenia, Diro_col$Dirofilaria))
-chisq.test(table(Diro_col$Leukophilia, Diro_col$Dirofilaria))
+chisq.test(table(Diro_col$Leukocytosis, Diro_col$Dirofilaria))
 ```
 ```{r}
 Diro_col%<>%mutate(Eosinophilia=ifelse(EOSIN>9, 1,0))
