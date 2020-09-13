@@ -328,12 +328,19 @@ table(Diro_col$Leukopenia, Diro_col$Dirofilaria)
 table(Diro_col$Leukocytosis, Diro_col$Dirofilaria)
 chisq.test(table(Diro_col$Leukopenia, Diro_col$Dirofilaria))
 chisq.test(table(Diro_col$Leukocytosis, Diro_col$Dirofilaria))
+chisq.test(table(Diro_col$Sex,Diro_col$Dirofilaria))
+```
+```{r}
+chisq.test(Sex)
 ```
 ```{r}
 Diro_col%<>%mutate(Eosinophilia=ifelse(EOSIN>9, 1,0))
 table(Diro_col$Eosinophilia, Diro_col$Dirofilaria)
 chisq.test(table(Diro_col$Eosinophilia, Diro_col$Dirofilaria))
 ```
+```
+```
+
 
 library(sf)
 dsa<-st_as_sf(maps::map("world", regions = "panama"))
